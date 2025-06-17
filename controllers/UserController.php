@@ -27,6 +27,7 @@ class UserController
 		if ($user && password_verify($password, $user['password'])) {
 			session_start();
 			$_SESSION['user'] = $user['email'];
+			$_SESSION['user_id'] = $user['id'];
 			$this->auth->login($user);
 			header('Location: ' . basePath('/feed'));
 			exit;

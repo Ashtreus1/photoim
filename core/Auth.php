@@ -7,22 +7,23 @@ class Auth {
     }
 
     public function userId() {
-        return $_SESSION['user']['email'] ?? null;
+        return $_SESSION['user_id']['email'] ?? null;
     }
 
     public function check() {
-        return isset($_SESSION['user']);
+        return isset($_SESSION['user_id']);
     }
 
     public function login($user) {
-        $_SESSION['user'] = [
+        $_SESSION['user_id'] = [
             'email' => $user['email'],
-            'username' => $user['username']
+            'username' => $user['username'],
+            'user_id' -> $user['id']
         ];
     }
 
     public function logout() {
-        unset($_SESSION['user']);
+        unset($_SESSION['user_id']);
         session_destroy();
     }
 

@@ -3,9 +3,11 @@
 require_once BASE_PATH . '/controllers/UserController.php';
 require_once BASE_PATH . '/controllers/TagController.php';
 require_once BASE_PATH . '/core/Auth.php';
+require_once BASE_PATH . '/controllers/UserImageController.php';
 
 $user = new UserController();
 $auth = new Auth();
+$userImage = new UserImageController();
 
 global $render;
 
@@ -42,6 +44,7 @@ $router->get('/register', function () use ($render, $auth) {
 
 $router->post('/register', fn() => $user->handleRegister());
 $router->post('/login', fn() => $user->handleLogin());
+$router->post('/creation-post', fn() => $userImage->handlePost());
 
 
 $router->get('/feed', function() use($render, $auth, $user){
@@ -61,14 +64,13 @@ $router->get('/feed', function() use($render, $auth, $user){
     ]);
 });
 
-$router->get('/profile', function() use($render, $auth, $user){
+$router->get('/profile', function() use($render, $auth){
     $auth->requireAuth();
-    $userEmail = $auth->userId();
-    $userData = $user->handleFetchUsernameAvatar($userEmail);
+   
+
     $render->setLayout('layouts/protected');
     $render->view('protected/profile', [
         'title' => 'Profile',
-        'userData' => $userData
     ]);
 });
 
@@ -78,13 +80,21 @@ $router->get('/logout', function() use($auth){
     exit;
 });
 
-$router->get('/creation-post', function () use ($render, $auth, $user) {
+
+
+$router->get('/creation-post', function() use($render, $auth, $user){
     $auth->requireAuth();
+
+    $tagController = new TagController();
+    $tags = $tagController->handleFetchTags();
+
     $userEmail = $auth->userId();
-    $userData = $user->handleFetchUsernameAvatar($userEmail);
+    $userData = $user->handleFetchUsernameAvatar($userEmail);       
+
     $render->setLayout('layouts/protected');
     $render->view('protected/creation_post', [
         'title' => 'Create Post',
+        'tags' => $tags,
         'userData' => $userData
     ]);
 });

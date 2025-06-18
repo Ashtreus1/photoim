@@ -28,11 +28,13 @@
 		<img src="<?= basePath('/' . htmlspecialchars($userData['avatar_path'] ?? 'assets/images/user/avatar1.png')) ?>" alt="Avatar"
 			class="h-10 w-10 rounded-full object-cover" />
 	 </a> 
+
 	  <a 
 	    href="<?= basePath('/logout') ?>"
-	    class="btn border-none bg-red-500 shadow-none text-white"
-	  >
-	    Logout
+	    class="btn border-none bg-red-500 shadow-none text-white" button style="background-color: #ff4d4d; color: white; border-radius: 5px; padding: 10px 20px; border: none; cursor: pointer;">
+    Log Out
+</button>
+	
 	  </a>
 	</div>
   </div>

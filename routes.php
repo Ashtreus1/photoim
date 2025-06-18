@@ -55,13 +55,12 @@ $router->get('/feed', function() use($render, $auth, $user, $userImage){
 
     $userEmail = $auth->userId();
     $userData = $user->handleFetchUsernameAvatar($userEmail);
-    // $images = $userImage->getAllImages();
 
-    // Debug output
-    if (empty($images)) {
-        error_log("No images returned from getAllImages()");
+    $selectedTag = isset($_GET['tag']) ? $_GET['tag'] : null;
+    if ($selectedTag && $selectedTag !== 'All') {
+        $images = $userImage->handleGetImagesByTag($selectedTag);
     } else {
-        error_log("Found " . count($images) . " images");
+        $images = $userImage->handleGetAllImages();
     }
 
     $render->setLayout('layouts/protected');
@@ -69,7 +68,8 @@ $router->get('/feed', function() use($render, $auth, $user, $userImage){
         'title' => 'Feed',
         'tags' => $tags,
         'userData' => $userData,
-        // 'images' => $images
+        'images' => $images,
+        'selectedTag' => $selectedTag
     ]);
 });
 

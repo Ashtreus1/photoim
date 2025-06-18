@@ -19,75 +19,72 @@
   </label>
 
   <div class="flex flex-wrap items-center gap-2">
-    <button class="px-4 py-1 bg-transparent rounded-full hover:bg-blue-600 cursor-pointer transition-colors duration-300">
-      All
-    </button>
-
+    <a href="<?= basePath('/feed') ?>">
+      <button class="px-4 py-1 bg-transparent rounded-full hover:bg-blue-600 cursor-pointer transition-colors duration-300<?= empty($selectedTag) || $selectedTag === 'All' ? ' bg-blue-600 text-white' : '' ?>">
+        All
+      </button>
+    </a>
     <?php
     $limit = 6;
     foreach (array_slice($tags, 0, $limit) as $tag):
+      $isActive = isset($selectedTag) && $selectedTag === $tag;
       ?>
-      <button class="px-4 py-1 bg-transparent rounded-full hover:bg-blue-600 cursor-pointer transition-colors duration-300">
-        <?= htmlspecialchars($tag) ?>
-      </button>
+      <a href="<?= basePath('/feed?tag=') . urlencode($tag) ?>">
+        <button class="px-4 py-1 bg-transparent rounded-full hover:bg-blue-600 cursor-pointer transition-colors duration-300<?= $isActive ? ' bg-blue-600 text-white' : '' ?>">
+          <?= htmlspecialchars($tag) ?>
+        </button>
+      </a>
     <?php endforeach; ?>
-
     <?php if (count($tags) > $limit): ?>
       <div class="relative group">
         <button class="px-4 py-1 bg-transparent rounded-full hover:bg-blue-600 transition-colors duration-300">
           More
         </button>
         <div class="absolute z-10 invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 bg-gray-200 border rounded shadow-md p-2">
-          <?php foreach (array_slice($tags, $limit) as $tag): ?>
-            <div class="px-2 py-1 hover:bg-blue-600 cursor-pointer transition-colors duration-300">
-              <?= htmlspecialchars($tag) ?>
-            </div>
+          <?php foreach (array_slice($tags, $limit) as $tag):
+            $isActive = isset($selectedTag) && $selectedTag === $tag;
+            ?>
+            <a href="<?= basePath('/feed?tag=') . urlencode($tag) ?>">
+              <div class="px-2 py-1 hover:bg-blue-600 cursor-pointer transition-colors duration-300<?= $isActive ? ' bg-blue-600 text-white' : '' ?>">
+                <?= htmlspecialchars($tag) ?>
+              </div>
+            </a>
           <?php endforeach; ?>
         </div>
       </div>
     <?php endif; ?>
   </div>
+  <?php if (!empty($selectedTag) && $selectedTag !== 'All'): ?>
+    <div class="w-full text-center my-4">
+      <span class="inline-block px-4 py-2 rounded-full bg-blue-600 text-white font-semibold text-lg">
+        Showing images for tag: <?= htmlspecialchars($selectedTag) ?>
+      </span>
+    </div>
+  <?php endif; ?>
 </div>
 
 <div class="m-10 p-6 grid grid-cols-2 md:grid-cols-4 gap-6">
   <?php
-    $dir = 'assets/images/post_photos/post_png/';
-    $images = glob($dir . '*.{jpg,jpeg,png,gif,webp}', GLOB_BRACE);
-    $columns = array_chunk($images, ceil(count($images) / 4)); 
+    if (!empty($images)) {
+      $columns = array_chunk($images, ceil(count($images) / 4));
+      foreach ($columns as $column) {
+        echo '<div class="grid gap-4 cursor-pointer">';
+        foreach ($column as $image) {
+          $imagePath = $image['image_path'];
 
-    foreach ($columns as $column) {      echo '<div class="grid gap-4 cursor-pointer">';
-      foreach ($column as $image) {
-        $filename = basename($image);
-        $tag = pathinfo($filename, PATHINFO_FILENAME);
-  ?>        <div class="relative group overflow-hidden rounded-lg mb-6">
-          <a href="<?= basePath('/view-page?image=' . urlencode($image)) ?>">
-            <img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                src="<?php echo $image; ?>" 
-                alt="<?php echo $tag; ?>">
-            <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </a>
-          <button 
-            class="absolute top-2 right-2 z-10 p-2 rounded-full shadow-md opacity-0 
-                  group-hover:opacity-100 bg-white text-red-500 
-                  hover:bg-red-500 hover:text-white transition-all duration-300 
-                  group/button">
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              viewBox="0 0 24 24" 
-              fill="currentColor" 
-              class="w-5 h-5 transition-colors duration-300">
-              <path fill-rule="evenodd" 
-                    d="M12.1 21.55l-1.1-1.02C5.14 15.24 2 12.39 2 8.5 
-                      2 6 4 4 6.5 4c1.74 0 3.41 1 4.13 2.44h1.74C14.09 5 
-                      15.76 4 17.5 4 20 4 22 6 22 8.5c0 3.89-3.14 6.74-8.9 
-                      12.03l-1.1 1.02z" 
-                    clip-rule="evenodd" />
-            </svg>
-          </button>
-        </div>
+  ?>
+          <div class="relative group overflow-hidden rounded-lg mb-6 bg-white shadow">
+            <a href="<?= basePath('/view-page?image=' . urlencode($imagePath)) ?>">
+              <img class="transition-transform duration-300 group-hover:scale-105"
+                  style="max-width:100%; height:auto; display:block; margin:0 auto;"
+                  src="<?= htmlspecialchars($imagePath) ?>"
+                  alt="<?= htmlspecialchars($title) ?>">
+            </a>
+          </div>
   <?php
+        }
+        echo '</div>';
       }
-      echo '</div>';
     }
   ?>
 </div>

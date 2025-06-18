@@ -154,10 +154,18 @@ body {
     position: relative;
 }
 
-.profile-details {
-    display: flex;
-    margin-left: 300px;
+.profile-actions {
+  margin-left: auto;
 }
+
+.profile-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* optional */
+  gap: 1rem; /* optional spacing */
+}
+
 
 .profile-details h1 {
     font-size: 2.6em;

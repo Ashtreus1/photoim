@@ -2,25 +2,27 @@
     <img class="cover-photo" src="design/photos/cover2.webp" alt="Cover Photo">
 </div>
 <main class="profile-content">
-    <div class="profile-picture-wrapper">
-        <img class="profile-picture" src="<?= isset($userData['avatar_path']) && $userData['avatar_path'] ? basePath('/' . ltrim($userData['avatar_path'], '/')) : basePath('/assets/images/user/avatar1.png') ?>" alt="Profile Picture">
-    </div>
+    <div class="profile-header-wrapper">
+        <div class="profile-picture-wrapper">
+            <img class="profile-picture" src="<?= isset($userData['avatar_path']) && $userData['avatar_path'] ? basePath('/' . ltrim($userData['avatar_path'], '/')) : basePath('/assets/images/user/avatar1.png') ?>" alt="Profile Picture">
+        </div>
 
-    <div class="profile-details">
-    <div class="profile-info">
-        <div class="profile-text">
-        <h1><?= htmlspecialchars($userData['username'] ?? 'Guest') ?></h1>
-        <p>Currently studying BSIT</p>
+        <div class="profile-details">
+            <div class="profile-info">
+                <div class="profile-text">
+                    <h1><?= htmlspecialchars($userData['username']) ?></h1>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <button class="edit-profile-button btn" onclick="my_modal_2.showModal()">
+                    <div class="edit-icon"><span class="material-symbols-outlined">edit</span></div>
+                    <span>Edit Profile</span>
+                </button>
+            </div>
         </div>
     </div>
 
-    <div class="profile-actions">
-        <button class="edit-profile-button btn" onclick="my_modal_2.showModal()">
-        <div class="edit-icon"><span class="material-symbols-outlined">edit</span></div>
-        <span>Edit Profile</span>
-        </button>
-    </div>
-    </div>
 
     <nav class="profile-nav">
         <div>Post</div>

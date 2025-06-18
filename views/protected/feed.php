@@ -49,24 +49,23 @@
   </div>
 </div>
 
-<div class="m-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="m-10 p-6 grid grid-cols-2 md:grid-cols-4 gap-6">
   <?php
     $dir = 'assets/images/post_photos/post_png/';
     $images = glob($dir . '*.{jpg,jpeg,png,gif,webp}', GLOB_BRACE);
     $columns = array_chunk($images, ceil(count($images) / 4)); 
 
-    foreach ($columns as $column) {
-      echo '<div class="grid gap-4 cursor-pointer">';
+    foreach ($columns as $column) {      echo '<div class="grid gap-4 cursor-pointer">';
       foreach ($column as $image) {
         $filename = basename($image);
         $tag = pathinfo($filename, PATHINFO_FILENAME);
-  ?>
-        <div class="relative group overflow-hidden rounded-lg">
-          <img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
- 
-              src="<?php echo $image; ?>" 
-              alt="<?php echo $tag; ?>">
-          <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+  ?>        <div class="relative group overflow-hidden rounded-lg mb-6">
+          <a href="<?= basePath('/view-page?image=' . urlencode($image)) ?>">
+            <img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                src="<?php echo $image; ?>" 
+                alt="<?php echo $tag; ?>">
+            <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </a>
           <button 
             class="absolute top-2 right-2 z-10 p-2 rounded-full shadow-md opacity-0 
                   group-hover:opacity-100 bg-white text-red-500 

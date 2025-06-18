@@ -41,4 +41,6 @@ class UserImageController
 		header('Location: ' . basePath('/feed?post_created=true'));
 		exit;
 	}
+
+
 }

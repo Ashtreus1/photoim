@@ -1,13 +1,8 @@
-
-
 <section class="content">
-  <main class="main">
-    <section class="post-section">
-      <img src="../../php/design/photos/category.webp" alt="Main Post" class="main-image" />
-      <div class="post-content">
-        <h2 class="main-caption">Ang galing mo talaga wooo</h2>
-        <p class="author">Jameson Gelarman</p>
-        <div class="tags">#Technology</div>
+  <main class="main">    <section class="post-section">
+      <img src="<?= $imagePath ?>" alt="Post Image" class="main-image" />      <div class="post-content">        <h2 class="main-caption"><?= htmlspecialchars($imageDetails['title'] ?? pathinfo(basename($imagePath), PATHINFO_FILENAME)) ?></h2>
+        <p class="author"><?= htmlspecialchars($imageDetails['username'] ?? 'Unknown User') ?></p>
+        <div class="tags"><?= htmlspecialchars($imageDetails['description'] ?? '#Photography') ?></div>
 
         <!-- Comments -->
         <div class="comment-scroll">

@@ -19,37 +19,74 @@
   </label>
 
   <div class="flex flex-wrap items-center gap-2">
-    <button class="px-4 py-1 bg-transparent rounded-full hover:bg-blue-600 cursor-pointer transition-colors duration-300">
-      All
-    </button>
-
+    <a href="<?= basePath('/feed') ?>">
+      <button class="px-4 py-1 bg-transparent rounded-full hover:bg-blue-600 cursor-pointer transition-colors duration-300<?= empty($selectedTag) || $selectedTag === 'All' ? ' bg-blue-600 text-white' : '' ?>">
+        All
+      </button>
+    </a>
     <?php
     $limit = 6;
     foreach (array_slice($tags, 0, $limit) as $tag):
+      $isActive = isset($selectedTag) && $selectedTag === $tag;
       ?>
-      <button class="px-4 py-1 bg-transparent rounded-full hover:bg-blue-600 cursor-pointer transition-colors duration-300">
-        <?= htmlspecialchars($tag) ?>
-      </button>
+      <a href="<?= basePath('/feed?tag=') . urlencode($tag) ?>">
+        <button class="px-4 py-1 bg-transparent rounded-full hover:bg-blue-600 cursor-pointer transition-colors duration-300<?= $isActive ? ' bg-blue-600 text-white' : '' ?>">
+          <?= htmlspecialchars($tag) ?>
+        </button>
+      </a>
     <?php endforeach; ?>
-
     <?php if (count($tags) > $limit): ?>
       <div class="relative group">
         <button class="px-4 py-1 bg-transparent rounded-full hover:bg-blue-600 transition-colors duration-300">
           More
         </button>
         <div class="absolute z-10 invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 bg-gray-200 border rounded shadow-md p-2">
-          <?php foreach (array_slice($tags, $limit) as $tag): ?>
-            <div class="px-2 py-1 hover:bg-blue-600 cursor-pointer transition-colors duration-300">
-              <?= htmlspecialchars($tag) ?>
-            </div>
+          <?php foreach (array_slice($tags, $limit) as $tag):
+            $isActive = isset($selectedTag) && $selectedTag === $tag;
+            ?>
+            <a href="<?= basePath('/feed?tag=') . urlencode($tag) ?>">
+              <div class="px-2 py-1 hover:bg-blue-600 cursor-pointer transition-colors duration-300<?= $isActive ? ' bg-blue-600 text-white' : '' ?>">
+                <?= htmlspecialchars($tag) ?>
+              </div>
+            </a>
           <?php endforeach; ?>
         </div>
       </div>
     <?php endif; ?>
   </div>
+  <?php if (!empty($selectedTag) && $selectedTag !== 'All'): ?>
+    <div class="w-full text-center my-4">
+      <span class="inline-block px-4 py-2 rounded-full bg-blue-600 text-white font-semibold text-lg">
+        Showing images for tag: <?= htmlspecialchars($selectedTag) ?>
+      </span>
+    </div>
+  <?php endif; ?>
 </div>
 
 <div class="m-10 p-6 grid grid-cols-2 md:grid-cols-4 gap-6">
+  <?php
+    if (!empty($images)) {
+      $columns = array_chunk($images, ceil(count($images) / 4));
+      foreach ($columns as $column) {
+        echo '<div class="grid gap-4 cursor-pointer">';
+        foreach ($column as $image) {
+          $imagePath = $image['image_path'];
+
+  ?>
+          <div class="relative group overflow-hidden rounded-lg mb-6 bg-white shadow">
+            <a href="<?= basePath('/view-page?image=' . urlencode($imagePath)) ?>">
+              <img class="transition-transform duration-300 group-hover:scale-105"
+                  style="max-width:100%; height:auto; display:block; margin:0 auto;"
+                  src="<?= htmlspecialchars($imagePath) ?>"
+                  alt="<?= htmlspecialchars($title) ?>">
+            </a>
+          </div>
+  <?php
+        }
+        echo '</div>';
+      }
+    }
+  ?>
   <?php foreach ($images as $image): ?>
     <div class="relative group overflow-hidden rounded-lg mb-6">
       <a href="<?= basePath('/view-page?image=' . urlencode($image['image_path'])) ?>">

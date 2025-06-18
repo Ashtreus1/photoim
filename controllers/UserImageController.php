@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../core/Database.php';
 require_once __DIR__ . '/../models/UserImageModel.php';
 
+
 class UserImageController
 {
 	private $pdo;
@@ -51,9 +52,15 @@ class UserImageController
 	{
 		return $this->userImageModel->getAllImages();
 	}
+	public function handleGetAllImages(){
+		return $this->userImageModel->getAllImages();
+	}
 
 	public function getImageDetails($imagePath)
 	{
 		return $this->userImageModel->getImageDetailsByPath($imagePath);
+	}
+	public function handleGetImagesByTag($tagName) {
+		return $this->userImageModel->getImagesByTag($tagName);
 	}
 }

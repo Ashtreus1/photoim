@@ -49,13 +49,24 @@ $router->get('/feed', function () use ($render, $userImage, $tagController) {
     requireAuth();
 
     $tags = $tagController->handleFetchTags();
-    $images = $userImage->getAllImages();
+
+    $userEmail = $auth->userId();
+    $userData = $user->handleFetchUsernameAvatar($userEmail);
+    // $images = $userImage->getAllImages();
+
+    // Debug output
+    if (empty($images)) {
+        error_log("No images returned from getAllImages()");
+    } else {
+        error_log("Found " . count($images) . " images");
+    }
 
     $render->setLayout('layouts/protected');
     $render->view('protected/feed', [
         'title' => 'Feed',
         'tags' => $tags,
-        'images' => $images
+        'userData' => $userData,
+        // 'images' => $images
     ]);
 });
 

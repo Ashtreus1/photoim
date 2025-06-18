@@ -19,18 +19,6 @@ class UserImageModel
 		$query->execute([$user_id, $tag_id, $title, $description, $image_path]);
 	}
 
-	public function getAllImages()
-	{
-		$query = $this->pdo->query('
-			SELECT users_images.*, users.username, tags.name AS tag_name
-			FROM users_images
-			JOIN users ON users.id = users_images.user_id
-			JOIN tags ON tags.id = users_images.tag_id
-			ORDER BY users_images.id DESC
-		');
-		return $query->fetchAll(PDO::FETCH_ASSOC);
-	}
-
 
 	public function getImageDetailsByPath($imagePath)
 	{

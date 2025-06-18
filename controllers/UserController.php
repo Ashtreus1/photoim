@@ -2,69 +2,79 @@
 
 require_once __DIR__ . '/../models/UserModel.php';
 require_once __DIR__ . '/../core/Database.php';
-require_once __DIR__ . '/../core/Auth.php';
 
 class UserController
 {
-	private $pdo;
-	private $userModel;
-	private $auth;
+    private $userModel;
 
-	public function __construct()
-	{
-		$this->pdo = new Database();
-		$this->userModel = new UserModel($this->pdo->connection);
-		$this->auth = new Auth();
-	}
+    public function __construct()
+    {
+        $pdo = new Database();
+        $this->userModel = new UserModel($pdo->connection);
+    }
 
-	public function handleLogin()
-	{
-		$email = $_POST['email'];
-		$password = $_POST['password'];
+    public function handleLogin(): void
+    {
+        $email = $_POST['email'] ?? '';
+        $password = $_POST['password'] ?? '';
 
-		$user = $this->userModel->findByEmail($email);
+        $user = $this->userModel->findByEmail($email);
 
-		if ($user && password_verify($password, $user['password'])) {
-			session_start();
-			$_SESSION['user'] = $user['email'];
-			$_SESSION['user_id'] = $user['id'];
-			$this->auth->login($user);
-			header('Location: ' . basePath('/feed'));
-			exit;
-		} else {
-			header('Location: ' . basePath('/login?login_error=true'));
-			exit;
-		}
-	}
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user'] = [
+                'id' => $user['id'],
+                'email' => $user['email'],
+                'username' => $user['username'],
+                'avatar_path' => $user['avatar_path'] ?? 'assets/images/user/avatar1.png'
+            ];
 
-	public function handleRegister()
-	{
-		$username = $_POST['username'];
-		$email = $_POST['email'];
-		$password = $_POST['password'];
-		$confirm_password = $_POST['confirm_password'];
+            header('Location: ' . basePath('/feed'));
+            exit;
+        }
 
-		if ($password !== $confirm_password) {
-			header("Location: " . basePath('/register?error_password=Password did not match'));
-			exit;
-		}
+        header('Location: ' . basePath('/login?login_error=true'));
+        exit;
+    }
 
-		if ($this->userModel->findByEmail($email)) {
-			header("Location: " . basePath('/register?error_email=true'));
-			exit;
-		}
+    public function handleLogout(): void
+    {
+        unset($_SESSION['user']);
+        session_destroy();
 
-		if ($this->userModel->findByUsername($username)) {
-			header("Location: " . basePath('/register?error_username=true'));
-			exit;
-		}
+        header('Location: ' . basePath('/login'));
+        exit;
+    }
 
-		$this->userModel->create($username, $email, $password);
-			header("Location: " . basePath('/login?registered_success=true'));
-			exit;
-	}
-	
-	public function handleFetchUsernameAvatar($email) {
-		return $this->userModel->fetchUsernameAvatar($email);
-	}
+    public function handleRegister(): void
+    {
+        $username = $_POST['username'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $password = $_POST['password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
+
+        if ($password !== $confirmPassword) {
+            header('Location: ' . basePath('/register?error_password=Password did not match'));
+            exit;
+        }
+
+        if ($this->userModel->findByEmail($email)) {
+            header('Location: ' . basePath('/register?error_email=true'));
+            exit;
+        }
+
+        if ($this->userModel->findByUsername($username)) {
+            header('Location: ' . basePath('/register?error_username=true'));
+            exit;
+        }
+
+        $this->userModel->create($username, $email, $password);
+
+        header('Location: ' . basePath('/login?registered_success=true'));
+        exit;
+    }
+
+    public function handleFetchUsernameAvatar(int $userId): ?array
+    {
+        return $this->userModel->fetchUsernameAvatar($userId);
+    }
 }

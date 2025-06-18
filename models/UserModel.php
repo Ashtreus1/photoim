@@ -21,9 +21,9 @@ class UserModel {
 		return $selectQuery->fetch();
 	}
 
-	public function fetchUsernameAvatar($email){
-	    $selectQuery = $this->pdo->prepare("SELECT id, username, avatar_path FROM users WHERE email = ?");
-	    $selectQuery->execute([$email]);
+	public function fetchUsernameAvatar($userId){
+	    $selectQuery = $this->pdo->prepare("SELECT username, email, avatar_path FROM users WHERE id = ?");
+	    $selectQuery->execute([$userId]);
 	    return $selectQuery->fetch(PDO::FETCH_ASSOC);
 	}
 

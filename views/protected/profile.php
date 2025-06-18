@@ -1,16 +1,17 @@
 <div class="cover-photo-container">
     <img class="cover-photo" src="design/photos/cover2.webp" alt="Cover Photo">
 </div>
+
 <main class="profile-content">
     <div class="profile-header-wrapper">
         <div class="profile-picture-wrapper">
-            <img class="profile-picture" src="<?= isset($userData['avatar_path']) && $userData['avatar_path'] ? basePath('/' . ltrim($userData['avatar_path'], '/')) : basePath('/assets/images/user/avatar1.png') ?>" alt="Profile Picture">
+            <img class="profile-picture" src="<?= isset($user['avatar_path']) && $user['avatar_path'] ? basePath('/' . ltrim($user['avatar_path'], '/')) : basePath('/assets/images/user/avatar1.png') ?>" alt="Profile Picture">
         </div>
 
         <div class="profile-details">
             <div class="profile-info">
                 <div class="profile-text">
-                    <h1><?= htmlspecialchars($userData['username']) ?></h1>
+                    <h1><?= htmlspecialchars($user['username'] ?? 'Guest') ?></h1>
                 </div>
             </div>
 
@@ -23,7 +24,6 @@
         </div>
     </div>
 
-
     <nav class="profile-nav">
         <div>Post</div>
         <div>Pins</div>
@@ -33,6 +33,7 @@
     <hr class="divider">
 
     <section class="posts">
+        <!-- Sample static posts -->
         <div class="post">
             <img src="design/photos/post1.webp" alt="Post Image">
             <div class="caption-details">
@@ -40,7 +41,6 @@
                     <div class="caption">My brother died IJBOL</div>
                     <div class="tags">#Deadge #LOL #2Gether4Ever</div>
                 </div>
-                
                 <div class="likes">
                     <div class="like-icon"><span class="material-symbols-outlined">favorite</span></div>
                     <span>4.3k</span>
@@ -55,7 +55,6 @@
                     <div class="caption">New profile pic</div>
                     <div class="tags">#Pfp #pics</div>
                 </div>
-                
                 <div class="likes">
                     <div class="like-icon"><span class="material-symbols-outlined">favorite</span></div>
                     <span>4.3k</span>
@@ -69,7 +68,7 @@
   <div class="modal-box w-full max-w-md">
     <h3 class="text-lg font-bold mb-4">Edit Profile</h3>
 
-    <form action="/photoim/public/update-profile.php" method="POST" enctype="multipart/form-data" class="space-y-4">
+    <form action="<?= basePath('/update-profile.php') ?>" method="POST" enctype="multipart/form-data" class="space-y-4">
 
       <!-- Username -->
       <div>
@@ -78,7 +77,7 @@
           type="text"
           id="username"
           name="username"
-          value="<?= htmlspecialchars($userData['username']) ?>"
+          value="<?= htmlspecialchars($user['username'] ?? '') ?>"
           class="w-full border px-3 py-2 rounded"
           required
         />
@@ -91,7 +90,7 @@
           type="email"
           id="email"
           name="email"
-          value="<?= isset($userData['email']) ? htmlspecialchars($userData['email']) : '' ?>"
+          value="<?= htmlspecialchars($user['email'] ?? '') ?>"
           class="w-full border px-3 py-2 rounded bg-gray-100"
           readonly
         />
@@ -123,9 +122,7 @@
 
       <!-- Submit Button -->
       <div class="flex justify-end gap-2 pt-4">
-        <form method="dialog">
-          <button class="btn bg-gray-200">Cancel</button>
-        </form>
+        <button type="button" class="btn bg-gray-200" onclick="my_modal_2.close()">Cancel</button>
         <button type="submit" class="btn bg-blue-600 text-white">Save Changes</button>
       </div>
     </form>

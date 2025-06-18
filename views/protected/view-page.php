@@ -1,5 +1,4 @@
 
-
 <section class="content">
   <main class="main">
     <section class="post-section">
